@@ -122,12 +122,16 @@ module.exports = function(source) {
 		}
 
 		function referenceToRequest(ref, type) {
-			if (/^\$/.test(ref))
+			if (/^\$/.test(ref)) {
 				return ref.substring(1);
-			else if (type === 'helper' && query.helperDirs && query.helperDirs.length)
-				return ref;
-			else
+
+			// Don't use the rootRelative path for helpers if helper directories are given
+			} else if (type === 'helper' && query.helperDirs && query.helperDirs.length && rootRelative.length) {
+				return './' + ref;
+
+			} else {
 				return rootRelative + ref;
+			}
 		}
 
 		// Need another compiler pass?
